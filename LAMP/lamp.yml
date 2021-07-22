@@ -1,0 +1,71 @@
+---
+- name: "install httpd* service"
+  hosts: web1
+  tasks:
+    - name: "install httpd"
+      yum: 
+        name:
+          - httpd*
+          - vim
+        state: present
+    - name: "copy is httpd.conf"
+      copy:
+        src: "/LAMP/httpd.conf"
+        dest: "/etc/httpd/conf/httpd.conf"
+    - name: "copy is vhosts.conf"
+      copy:
+        src: "/LAMP/httpd-vhosts.conf"
+        dest: "/etc/httpd/conf.d/httpd-vhosts.conf"      
+    - name: "httpd is enabled"
+      service:
+        name: httpd.service
+        state: started
+        enabled: yes
+
+- name: "install mariadb* service is enabled"
+  hosts: web2
+  tasks: 
+    - name: "install mariadb* servie"
+      yum:
+        name: mariadb*
+        state: present
+    - name: "mariadb is enabled"
+      service:
+        name: mariadb.service
+        state: started
+        enabled: yes
+         
+- name: "install php* service"     
+  hosts: web3
+  tasks:
+    - name: "install php* servie"
+      yum:
+        name: php*
+        state: present
+    - name: "create index.php"
+      file:
+        path: "/data/php"
+        state: touch
+    - name: "copy is index.php"
+      copy:
+        src: "/LAMP/index.php"
+        dest: "/data/php/index.php"        
+    - name: "copy is www.conf"
+      copy:
+        src: "/LAMP/www.conf"
+        dest: "/etc/php-fpm.d/www.conf"
+    - name: "php start"
+      service:
+        name: php-fpm.service
+        state: started
+        enabled: yes
+              
+- name: "stop firewalld"
+  hosts: [web1,web2,web3]
+  tasks:
+    - name: "firewalld is disable"
+      service:
+        name: firewalld
+        state: stopped
+        enabled: no
+

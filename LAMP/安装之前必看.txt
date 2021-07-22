@@ -1,0 +1,9 @@
+1：5个文件全部放在/LAMP/目录下面
+2：修改俩个文件里面的ip地址
+
+
+参考：
+ProxyPassMatch ^/(.*\.php)$ fcgi://192.168.136.x:9000/data/php/$1   （php-ip）
+listen = 192.168.136.233:9000     （php本机ip）
+listen.allowed_clients = 192.168.136.219（apache-ip）
+#还没有变量 哎  输入ip  搞完洗脚
