@@ -1,0 +1,10 @@
+[Unit]
+Description=Start httpd
+[Service]
+Type=simple
+EnvironmentFile=/etc/httpd24/httpd.conf
+ExecStart=/usr/local/apache/bin/httpd -k start -DFOREGROUND
+ExecReload=/usr/local/apache/bin/httpd -k graceful
+ExecStop=/bin/kill -WINCH ${MAINPID}
+[Install]
+WantedBy=multi-user.target

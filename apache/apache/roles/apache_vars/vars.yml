@@ -1,0 +1,14 @@
+---
+#install gcc,perl,make,等等依赖包
+Tools: "openssl-devel,pcre-devel,expat-devel,libtool,gcc,gcc-c++,make,expat-devel,perl,perl-devel,epel-release,bzip2"
+#./configure-apr
+apr_make: "cd /usr/src/apr-1.7.0/ && ./configure --prefix=/usr/local/apr && make && make install"
+#./configure-apr-util
+util_make: "cd /usr/src/apr-util-1.6.1/ && ./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr && make && make install"
+#./configure-httpd
+httpd_make: "cd /usr/src/httpd-2.4.48/ && ./configure --prefix=/usr/local/apache --sysconfdir=/etc/httpd24 --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr-util && make && make install"
+#apache.sh
+PATH: "'export PATH=/usr/local/apache/bin:$PATH'"
+# apache is maninfo
+MAN: "MANDATORY_MANPATH                       /usr/local/apache/man"
+

@@ -1,0 +1,61 @@
+---
+- name: "编译install apache"
+  hosts: web1
+  vars_files:
+    - /etc/ansible/roles/apache_vars/vars.yml
+  tasks:
+    - name: "install gcc-c++...."
+      yum: 
+        name: "{{ Tools }}" 
+        state: present
+
+    - name: "cp is apr-1.7.0"
+      unarchive:
+        src: /etc/ansible/roles/apache_file/apr-1.7.0.tar.bz2 
+        dest: /usr/src/
+
+    - name: "cp is apr-util"
+      unarchive:
+        src: /etc/ansible/roles/apache_file/apr-util-1.6.1.tar.bz2 
+        dest: /usr/src/
+        
+    - name: "cp is httpd"
+      unarchive:
+        src: /etc/ansible/roles/apache_file/httpd-2.4.48.tar.bz2  
+        dest: /usr/src/
+        
+    - name: "update is apr-1.70"
+      lineinfile:
+        path: /usr/src/apr-1.7.0/configure
+        regexp: ' $RM "$cfgfile"'
+        line: '# $RM "$cfgfile"'     
+    
+    - name: "./configure is apr-1.7"
+      shell: "{{ apr_make }}"
+    - name: "./configure is apr-util"
+      shell: "{{ util_make }}"   
+    - name: "./configure is httpd"
+      shell: "{{ httpd_make }}"
+
+    - name: "create is apache.sh"
+      shell: "echo {{ PATH }} > /etc/profile.d/apache.sh"   
+    - name: "create is maninfo"
+      shell: "echo {{ MAN }} > /etc/man_db.conf"  
+
+    - name: "firewalld is stop is disable"
+      service:
+        name: firewalld
+        state: stopped
+        enabled: no
+    - name: "start is httpd"
+      copy:
+        src: /etc/ansible/roles/apache_file/httpd.service
+        dest: /etc/systemd/system/
+    - name: "daemon-reload"
+      shell: "systemctl daemon-reload"
+    - name: "enables is httpd"
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+          
