@@ -45,7 +45,7 @@
     - name: "create index.php"
       file:
         path: "/data/php"
-        state: touch
+        state: directory
     - name: "copy is index.php"
       copy:
         src: "/LAMP/index.php"
