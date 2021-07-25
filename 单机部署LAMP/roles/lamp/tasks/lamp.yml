@@ -1,0 +1,59 @@
+---
+- name: "install httpd* mariadb* php* service"
+  hosts: web
+  gather_facts: no
+  vars_files:
+    - /etc/ansible/roles/lamp/vars/package.yml
+    - /etc/ansible/roles/lamp/vars/user.yml
+    - /etc/ansible/roles/lamp/vars/server.yml  
+  tasks:
+    - name: "install"
+      yum: 
+        name: "{{ item }}"
+        state: present
+      loop: "{{ tools }}"
+
+    - name: "create user"
+      user:
+        name: "{{ item }}"
+        state: present
+        system: yes
+        create_home: no
+        shell: /sbin/nologin
+      loop: "{{ name }}"  
+
+    - name: "copy is httpd.conf "
+      copy:
+        src: /etc/ansible/roles/lamp/files/httpd.conf 
+        dest: /etc/httpd/conf/httpd.conf
+
+    - name: "copy is vhosts.conf"
+      copy:
+        src: /etc/ansible/roles/lamp/files/httpd-vhosts.conf
+        dest: /etc/httpd/conf.d/httpd-vhosts.conf
+
+    - name: "copy is index.php"
+      copy:
+        src: /etc/ansible/roles/lamp/files/index.php
+        dest: /var/www/html/index.php
+
+    - name: "copy is www.conf"
+      copy:
+        src: /etc/ansible/roles/lamp/files/www.conf
+        dest: /etc/php-fpm.d/www.conf  
+
+    - name: "stopped is firewalld"
+      service: 
+        name: firewalld
+        state: stopped
+        enabled: no
+    - name: "setenforce 0"
+      shell: "setenforce 0"
+
+    - name: "httpd mariadb php is enabled"
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop: "{{ server }}"        
+

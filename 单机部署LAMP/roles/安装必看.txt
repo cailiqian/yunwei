@@ -1,0 +1,6 @@
+#  roles文件放在/etc/ansible/下即可  
+# 加密文件密码：123456 ，运行起来   看效果
+
+参考--vault-id @prompt
+
+别yum部署细节emm！！！
